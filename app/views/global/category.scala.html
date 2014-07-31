@@ -1,0 +1,21 @@
+@(categories : List[Category])
+
+@display(category : Category) = {
+
+	<div> @category.getNames() </div>
+	
+	@for(cat <- category.getChildren()){
+		@display(cat)
+	}
+}
+
+
+
+@for(c <- categories){
+	@display(c)
+}
+
+
+
+
+

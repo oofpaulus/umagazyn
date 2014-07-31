@@ -86,20 +86,20 @@ public class Account extends Controller {
 	public static Result verifyEmail() {
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
 		final User user = Application.getLocalUser(session());
-		if (user.isEmailValidated()) {
+		if (user.emailValidated) {
 			// E-Mail has been validated already
 			flash(Application.FLASH_MESSAGE_KEY,
 					Messages.get("playauthenticate.verify_email.error.already_validated"));
-		} else if (user.getEmail() != null && !user.getEmail().trim().isEmpty()) {
+		} else if (user.email != null && !user.email.trim().isEmpty()) {
 			flash(Application.FLASH_MESSAGE_KEY, Messages.get(
 					"playauthenticate.verify_email.message.instructions_sent",
-					user.getEmail()));
+					user.email));
 			MyUsernamePasswordAuthProvider.getProvider()
 					.sendVerifyEmailMailingAfterSignup(user, ctx());
 		} else {
 			flash(Application.FLASH_MESSAGE_KEY, Messages.get(
 					"playauthenticate.verify_email.error.set_email_first",
-					user.getEmail()));
+					user.email));
 		}
 		return redirect(routes.Application.profile());
 	}
@@ -109,7 +109,7 @@ public class Account extends Controller {
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
 		final User u = Application.getLocalUser(session());
 
-		if (!u.isEmailValidated()) {
+		if (!u.emailValidated) {
 			return ok(unverified.render());
 		} else {
 			return ok(password_change.render(PASSWORD_CHANGE_FORM));

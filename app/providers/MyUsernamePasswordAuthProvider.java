@@ -66,7 +66,16 @@ public class MyUsernamePasswordAuthProvider
 
 		@Required
 		@Email
-		public String email;
+		protected String email;
+        
+        public String getEmail() {
+			return email;
+		}
+		
+		public void setEmail(String eml) {
+			email = eml;
+		}
+		
 
 	}
 
@@ -82,24 +91,71 @@ public class MyUsernamePasswordAuthProvider
 		public String getEmail() {
 			return email;
 		}
+		
+		public void setEmail(String eml) {
+			email = eml;
+		}
 
 		@Override
 		public String getPassword() {
 			return password;
 		}
+		
+		public void setPassword(String pass) {
+			password = pass;
+		}
 	}
 
 	public static class MySignup extends MyLogin {
 
+		@Override
+		public String getPassword() {
+			return password;
+		}
+		
+		@Override
+		public void setPassword(String pass) {
+			password = pass;
+		}
+		
+		@Override
+		public String getEmail() {
+			return email;
+		}
+		
+		@Override
+		public void setEmail(String eml) {
+			email = eml;
+		}
+	
 		@Required
 		@MinLength(5)
 		public String repeatPassword;
+		
+		public void setRepeatPassword(String pass)
+		{
+			repeatPassword = pass;
+		}
+		
+		public String getRepeatPassword()
+		{
+			return repeatPassword;
+		}
 
 		@Required
 		public String name;
+        
+        public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
 
 		public String validate() {
 			if (password == null || !password.equals(repeatPassword)) {
+				Logger.error(name + " = " + email + " = " + password + " = " + repeatPassword);
 				return Messages
 						.get("playauthenticate.password.signup.error.passwords_not_same");
 			}
@@ -126,7 +182,7 @@ public class MyUsernamePasswordAuthProvider
 	protected com.feth.play.module.pa.providers.password.UsernamePasswordAuthProvider.SignupResult signupUser(final MyUsernamePasswordAuthUser user) {
 		final User u = User.findByUsernamePasswordIdentity(user);
 		if (u != null) {
-			if (u.emailValidated) {
+			if (u.isEmailValidated()) {
 				// This user exists, has its email validated and is active
 				return SignupResult.USER_EXISTS;
 			} else {
@@ -152,10 +208,10 @@ public class MyUsernamePasswordAuthProvider
 		if (u == null) {
 			return LoginResult.NOT_FOUND;
 		} else {
-			if (!u.emailValidated) {
+			if (!u.isEmailValidated()) {
 				return LoginResult.USER_UNVERIFIED;
 			} else {
-				for (final LinkedAccount acc : u.linkedAccounts) {
+				for (final LinkedAccount acc : u.getLinkedAccounts()) {
 					if (getKey().equals(acc.providerKey)) {
 						if (authUser.checkPassword(acc.providerUserId,
 								authUser.getPassword())) {
@@ -251,6 +307,7 @@ public class MyUsernamePasswordAuthProvider
 	}
 
 	protected String generateVerificationRecord(final User user) {
+				Logger.error("************************************************" + user.toString()); 
 		final String token = generateToken();
 		// Do database actions, etc.
 		TokenAction.create(Type.EMAIL_VERIFICATION, token, user);
@@ -281,10 +338,10 @@ public class MyUsernamePasswordAuthProvider
 
 		final String html = getEmailTemplate(
 				"views.html.account.email.password_reset", langCode, url,
-				token, user.name, user.email);
+				token, user.getName(), user.getEmail());
 		final String text = getEmailTemplate(
 				"views.txt.account.email.password_reset", langCode, url, token,
-				user.name, user.email);
+				user.getName(), user.getEmail());
 
 		return new Body(text, html);
 	}
@@ -362,10 +419,10 @@ public class MyUsernamePasswordAuthProvider
 
 		final String html = getEmailTemplate(
 				"views.html.account.email.verify_email", langCode, url, token,
-				user.name, user.email);
+				user.getName(), user.getEmail());
 		final String text = getEmailTemplate(
 				"views.txt.account.email.verify_email", langCode, url, token,
-				user.name, user.email);
+				user.getName(), user.getEmail());
 
 		return new Body(text, html);
 	}
@@ -381,6 +438,6 @@ public class MyUsernamePasswordAuthProvider
 	}
 
 	private String getEmailName(final User user) {
-		return getEmailName(user.email, user.name);
+		return getEmailName(user.getEmail(), user.getName());
 	}
 }

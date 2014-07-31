@@ -1,4 +1,3 @@
-Micro magazyn 
 # Play Authenticate sample Java application
 
 Authentication providers that require further configuration parameters

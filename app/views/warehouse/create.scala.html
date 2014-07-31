@@ -1,0 +1,30 @@
+@(createForm: Form[_])
+
+@import helper._
+@import helper.twitterBootstrap._
+@import com.feth.play.module.pa.views.html._
+
+
+
+@main("Magazyn", ""){
+
+	@if(createForm.hasGlobalErrors() == true) {
+		<p class="error">
+            <span class="label label-important">@createForm.globalError.message</span>
+    	</p>
+	}
+
+    @helper.form(routes.Depot.doCreate) {
+
+        @inputText(
+          createForm("name"),
+          '_showConstraints -> true,
+          '_label -> "Podaj nazw magazynu"
+        )
+        @inputText(
+          createForm("comment"),
+          '_label -> "Podaj nazw magazynu"
+        )
+        <input type="submit"/>
+    }
+}

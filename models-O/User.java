@@ -31,122 +31,36 @@ public class User extends Model implements Subject {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Override
-	public String toString()
-	{
-		return email + " = " + name;
-	
-	}
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public Date getLastLogin() {
-		return lastLogin;
-	}
-
-	public void setLastLogin(Date lastLogin) {
-		this.lastLogin = lastLogin;
-	}
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
-	public boolean isEmailValidated() {
-		return emailValidated;
-	}
-
-	public void setEmailValidated(boolean emailValidated) {
-		this.emailValidated = emailValidated;
-	}
-
-	public List<LinkedAccount> getLinkedAccounts() {
-		return linkedAccounts;
-	}
-
-	public void setLinkedAccounts(List<LinkedAccount> linkedAccounts) {
-		this.linkedAccounts = linkedAccounts;
-	}
-
-	public void setRoles(List<SecurityRole> roles) {
-		this.roles = roles;
-	}
-
-	public void setPermissions(List<UserPermission> permissions) {
-		this.permissions = permissions;
-	}
 	@Id
-	private Long id;
+	public Long id;
 
 	@Constraints.Email
 	// if you make this unique, keep in mind that users *must* merge/link their
 	// accounts then on signup with additional providers
 	// @Column(unique = true)
-	private String email;
+	public String email;
 
-	private String name;
+	public String name;
 	
-	private String firstName;
+	public String firstName;
 	
-	private String lastName;
+	public String lastName;
 
 	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date lastLogin;
+	public Date lastLogin;
 
-	private boolean active;
+	public boolean active;
 
-	private boolean emailValidated;
+	public boolean emailValidated;
 
 	@ManyToMany
-	private List<SecurityRole> roles;
+	public List<SecurityRole> roles;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<LinkedAccount> linkedAccounts;
+	public List<LinkedAccount> linkedAccounts;
 
 	@ManyToMany
-	private List<UserPermission> permissions;
+	public List<UserPermission> permissions;
 
 	public static final Finder<Long, User> find = new Finder<Long, User>(
 			Long.class, User.class);
@@ -303,14 +217,12 @@ public class User extends Model implements Subject {
 		return LinkedAccount.findByProviderKey(this, providerKey);
 	}
 
-		
-	public void verify() {
-		
-		emailValidated = true;
-		save();
-		TokenAction.deleteByUser(this, Type.EMAIL_VERIFICATION);
+	public static void verify(final User unverified) {
+		// You might want to wrap this into a transaction
+		unverified.emailValidated = true;
+		unverified.save();
+		TokenAction.deleteByUser(unverified, Type.EMAIL_VERIFICATION);
 	}
-	
 
 	public void changePassword(final UsernamePasswordAuthUser authUser,
 			final boolean create) {

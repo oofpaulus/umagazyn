@@ -69,7 +69,7 @@ public class Signup extends Controller {
 			// should find out if we actually have a user with this email
 			// address and whether password login is enabled for him/her. Also
 			// only send if the email address of the user has been verified.
-			final String email = filledForm.get().getEmail();
+			final String email = filledForm.get().email;
 
 			// We don't want to expose whether a given email address is signed
 			// up, so just say an email has been sent, even though it might not
@@ -87,7 +87,7 @@ public class Signup extends Controller {
 				final MyUsernamePasswordAuthProvider provider = MyUsernamePasswordAuthProvider
 						.getProvider();
 				// User exists
-				if (user.isEmailValidated()) {
+				if (user.emailValidated) {
 					provider.sendPasswordResetMailing(user, ctx());
 					// In case you actually want to let (the unknown person)
 					// know whether a user was found/an email was sent, use,
@@ -154,7 +154,7 @@ public class Signup extends Controller {
 			if (ta == null) {
 				return badRequest(no_token_or_invalid.render());
 			}
-			final User u = ta.getTargetUser();
+			final User u = ta.targetUser;
 			try {
 				// Pass true for the second parameter if you want to
 				// automatically create a password and the exception never to
@@ -173,7 +173,7 @@ public class Signup extends Controller {
 						Messages.get("playauthenticate.reset_password.message.success.auto_login"));
 
 				return PlayAuthenticate.loginAndRedirect(ctx(),
-						new MyLoginUsernamePasswordAuthUser(u.getEmail()));
+						new MyLoginUsernamePasswordAuthUser(u.email));
 			} else {
 				// send the user to the login page
 				flash(Application.FLASH_MESSAGE_KEY,
@@ -199,8 +199,8 @@ public class Signup extends Controller {
 		if (ta == null) {
 			return badRequest(no_token_or_invalid.render());
 		}
-		final String email = ta.getTargetUser().getEmail();
-		ta.getTargetUser().verify();
+		final String email = ta.targetUser.email;
+		User.verify(ta.targetUser);
 		flash(Application.FLASH_MESSAGE_KEY,
 				Messages.get("playauthenticate.verify_email.success", email));
 		if (Application.getLocalUser(session()) != null) {

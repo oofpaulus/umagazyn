@@ -38,69 +38,21 @@ public class TokenAction extends Model {
 	private final static long VERIFICATION_TIME = 7 * 24 * 3600;
 
 	@Id
-	private Long id;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public User getTargetUser() {
-		return targetUser;
-	}
-
-	public void setTargetUser(User targetUser) {
-		this.targetUser = targetUser;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	public Date getCreated() {
-		return created;
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public Date getExpires() {
-		return expires;
-	}
-
-	public void setExpires(Date expires) {
-		this.expires = expires;
-	}
+	public Long id;
 
 	@Column(unique = true)
-	private String token;
+	public String token;
 
 	@ManyToOne
-	private User targetUser;
+	public User targetUser;
 
-	private Type type;
-
-	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date created;
+	public Type type;
 
 	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date expires;
+	public Date created;
+
+	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
+	public Date expires;
 
 	public static final Finder<Long, TokenAction> find = new Finder<Long, TokenAction>(
 			Long.class, TokenAction.class);
@@ -111,7 +63,7 @@ public class TokenAction extends Model {
 
 	public static void deleteByUser(final User u, final Type type) {
 		QueryIterator<TokenAction> iterator = find.where()
-				.eq("targetUser.id", u.getId()).eq("type", type).findIterate();
+				.eq("targetUser.id", u.id).eq("type", type).findIterate();
 		Ebean.delete(iterator);
 		iterator.close();
 	}

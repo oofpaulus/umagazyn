@@ -80,9 +80,18 @@ public class Application extends Controller {
 
 	public static Result doSignup() {
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
+		 DynamicForm bindedForm = Form.form().bindFromRequest();
+		
+		 Logger.error("=================" + bindedForm.data().toString());
+		 Logger.error("==========" + bindedForm.hasErrors());
+		 Logger.error("==========" + bindedForm.hasGlobalErrors());
+		 
 		final Form<MySignup> filledForm = MyUsernamePasswordAuthProvider.SIGNUP_FORM
 				.bindFromRequest();
-
+		
+		
+		
+		Logger.error(filledForm.get().toString());
 		if (filledForm.hasErrors()) {
 			// User did not fill everything properly
 			return badRequest(signup.render(filledForm));
