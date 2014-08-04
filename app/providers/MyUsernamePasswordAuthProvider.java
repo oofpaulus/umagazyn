@@ -212,8 +212,8 @@ public class MyUsernamePasswordAuthProvider
 				return LoginResult.USER_UNVERIFIED;
 			} else {
 				for (final LinkedAccount acc : u.getLinkedAccounts()) {
-					if (getKey().equals(acc.providerKey)) {
-						if (authUser.checkPassword(acc.providerUserId,
+					if (getKey().equals(acc.getProviderKey())) {
+						if (authUser.checkPassword(acc.getProviderUserId(),
 								authUser.getPassword())) {
 							// Password was correct
 							return LoginResult.USER_LOGGED_IN;
@@ -307,7 +307,7 @@ public class MyUsernamePasswordAuthProvider
 	}
 
 	protected String generateVerificationRecord(final User user) {
-				Logger.error("************************************************" + user.toString()); 
+				
 		final String token = generateToken();
 		// Do database actions, etc.
 		TokenAction.create(Type.EMAIL_VERIFICATION, token, user);

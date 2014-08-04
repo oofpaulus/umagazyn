@@ -14,15 +14,30 @@
     <meta name="description" content="Play Authenticate - an authentication module for the Play! Framework 2.0">
     <meta name="author" content="The Play Authenticate Team">
 
-    <!-- Le scripts 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
+    <!-- Le scripts -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="@routes.Assets.at("js/bootstrap.min.js")"></script>
+	<script src="@routes.Assets.at("javascripts/jquery.js")"></script>
+	<script src="@routes.Assets.at("javascripts/jstree.min.js")"></script>
 	<script src="@routes.Application.jsRoutes" defer="defer"></script>
 
+<!--
+	<script src="http://static.jstree.com/3.0.2/assets/jquery-1.10.2.min.js"></script>
+	<script src="http://static.jstree.com/3.0.2/assets/jquery.address-1.6.js"></script>
+	<script src="http://static.jstree.com/3.0.2/assets/vakata.js"></script>
+	<script src="http://static.jstree.com/3.0.2/assets/dist/jstree.min.js"></script>
+	
+	
+	<script src="//static.jstree.com/latest/assets/dist/libs/jquery.js"></script>
+	<script src="//static.jstree.com/latest/assets/dist/jstree.min.js"></script>
+	-->
+	
     <!-- Le styles -->
+    <link rel="stylesheet" href="@routes.Assets.at("css/jstree/style.min.css")" />
     <link href="@routes.Assets.at("css/main.css")" rel="stylesheet">
     <link href="@routes.Assets.at("css/bootstrap.min.css")" rel="stylesheet">
 
+	<link rel="stylesheet" href="//static.jstree.com/latest/assets/dist/themes/default/style.min.css" />
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>

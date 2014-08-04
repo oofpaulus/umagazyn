@@ -17,13 +17,48 @@ public class LinkedAccount extends Model {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	public Long id;
+	private Long id;
 
 	@ManyToOne
-	public User user;
+	private User user;
 
-	public String providerUserId;
-	public String providerKey;
+	private String providerUserId;
+	private String providerKey;
+
+	
+	
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getProviderUserId() {
+		return providerUserId;
+	}
+
+	public void setProviderUserId(String providerUserId) {
+		this.providerUserId = providerUserId;
+	}
+
+	public String getProviderKey() {
+		return providerKey;
+	}
+
+	public void setProviderKey(String providerKey) {
+		this.providerKey = providerKey;
+	}
 
 	public static final Finder<Long, LinkedAccount> find = new Finder<Long, LinkedAccount>(
 			Long.class, LinkedAccount.class);

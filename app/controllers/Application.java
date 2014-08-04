@@ -26,9 +26,17 @@ public class Application extends Controller {
 
 	public static final String FLASH_MESSAGE_KEY = "message";
 	public static final String FLASH_ERROR_KEY = "error";
+	public static final String ADMIN_ROLE = "admin";
 	public static final String USER_ROLE = "user";
 	
 	public static Result index() {
+		
+		User u = getLocalUser(session());
+		if (u != null)
+		{
+			if (u.hasRole(Application.ADMIN_ROLE) == true)
+				return redirect(routes.Admin.index());
+		}
 		return ok(index.render());
 	}
 

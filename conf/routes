@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /admin                      controllers.Admin.index 
 GET     /restricted                 controllers.Application.restricted
 GET     /assets/javascript/routes.js    controllers.Application.jsRoutes
 
@@ -41,6 +42,10 @@ GET     /accounts/merge             controllers.Account.askMerge
 POST    /accounts/merge             controllers.Account.doMerge
 
 GET		/category					controllers.CategoryManager.show
+GET		/category/get_node  		controllers.CategoryManager.getNode(id: String ?= "")
+GET		/category/delete_node  		controllers.CategoryManager.deleteNode(id: String ?= "")
+GET		/category/create_node  		controllers.CategoryManager.addNode(id: String ?= "", position: String ?= "", text: String ?= "")
+GET		/category/rename_node  		controllers.CategoryManager.renameNode(id: String ?= "", text: String ?= "")
 
 GET     /warehouse/create           controllers.Depot.create
 POST    /warehouse/create           controllers.Depot.doCreate

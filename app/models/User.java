@@ -273,7 +273,7 @@ public class User extends Model implements Subject {
 		final Set<String> providerKeys = new HashSet<String>(
 				linkedAccounts.size());
 		for (final LinkedAccount acc : linkedAccounts) {
-			providerKeys.add(acc.providerKey);
+			providerKeys.add(acc.getProviderKey());
 		}
 		return providerKeys;
 	}
@@ -318,13 +318,13 @@ public class User extends Model implements Subject {
 		if (a == null) {
 			if (create) {
 				a = LinkedAccount.create(authUser);
-				a.user = this;
+				a.setUser(this);
 			} else {
 				throw new RuntimeException(
 						"Account not enabled for password usage");
 			}
 		}
-		a.providerUserId = authUser.getHashedPassword();
+		a.setProviderUserId(authUser.getHashedPassword());
 		a.save();
 	}
 
@@ -333,5 +333,16 @@ public class User extends Model implements Subject {
 		// You might want to wrap this into a transaction
 		this.changePassword(authUser, create);
 		TokenAction.deleteByUser(this, Type.PASSWORD_RESET);
+	}
+	
+	public boolean hasRole(String role)
+	{
+		List<? extends Role> roles = this.getRoles();
+		for (Role r : roles)
+		{
+			if (r.getName().equals(role))
+				return true;
+		}
+		return false;
 	}
 }

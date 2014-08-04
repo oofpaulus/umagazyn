@@ -1,17 +1,22 @@
 import java.util.Arrays;
+import java.util.Collections;
 
+import models.LinkedAccount;
 import models.SecurityRole;
+import models.User;
 
 import com.feth.play.module.pa.PlayAuthenticate;
 import com.feth.play.module.pa.PlayAuthenticate.Resolver;
 import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.feth.play.module.pa.exceptions.AuthException;
+import com.feth.play.module.pa.providers.password.UsernamePasswordAuthUser;
+import com.feth.play.module.pa.user.AuthUser;
 
 import controllers.routes;
-
 import play.Application;
 import play.GlobalSettings;
 import play.mvc.Call;
+import providers.MyUsernamePasswordAuthUser;
 
 public class Global extends GlobalSettings {
 
@@ -70,14 +75,46 @@ public class Global extends GlobalSettings {
 		initialData();
 	}
 
+	/**
+	 *  Create roles and admin account from application.conf
+	 *  	account.admin.email 
+	 *  	account.admin.password
+	 */
 	private void initialData() {
+		
 		if (SecurityRole.find.findRowCount() == 0) {
-			for (final String roleName : Arrays
-					.asList(controllers.Application.USER_ROLE)) {
-				final SecurityRole role = new SecurityRole();
-				role.roleName = roleName;
-				role.save();
-			}
+			
+			SecurityRole role = new SecurityRole();
+			role.roleName = controllers.Application.ADMIN_ROLE;
+			role.save();
+			
+			role.roleName = controllers.Application.USER_ROLE;
+			role.save();
+
+			// create admin user
+
+			User user = new User();
+			String email = play.Play.application().configuration().getString("account.admin.email");
+			String password = play.Play.application().configuration().getString("account.admin.password");
+			
+			user.setEmail(email);
+			user.setActive(true);
+			user.setEmailValidated(true);
+			
+			user.setRoles(Collections.singletonList(SecurityRole.findByRoleName(controllers.Application.ADMIN_ROLE)));
+			user.save();
+			user.saveManyToManyAssociations("roles");
+			
+			MyUsernamePasswordAuthUser authUser = new MyUsernamePasswordAuthUser(password);
+			LinkedAccount linkedAccount = new LinkedAccount();
+			linkedAccount.setUser(user);
+			linkedAccount.setProviderKey("password");
+			linkedAccount.setProviderUserId(authUser.getHashedPassword());
+			linkedAccount.save();
+			
+			
 		}
+				
+					
 	}
 }
