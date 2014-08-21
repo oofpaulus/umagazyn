@@ -11,14 +11,13 @@ import java.util.Map.Entry;
 
 import javax.validation.ValidationException;
 import javax.xml.validation.ValidatorHandler;
-
 import org.joda.time.DateTime;
-
 import com.avaje.ebean.Ebean;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.feth.play.module.pa.providers.password.UsernamePasswordAuthProvider;
 
 import models.Category;
+import models.ElementDictionary;
 import models.GlobalCategory;
 import models.TokenAction;
 import models.User;
@@ -57,7 +56,7 @@ public class CategoryManager extends Controller{
 		
 	}
 	
-	static class CategoryItem {
+	public static class CategoryItem {
 		
 		private Long id;
 		private String parent;
@@ -176,6 +175,46 @@ public class CategoryManager extends Controller{
 		//	return ok(Json.toJson(new String("siema" + id)));
 	}
 	
+	
+	public static Result getContent(String id){
+	
+		Integer intId = GlobalUtil.tryParseInt(id);
+        if (intId == null)
+            intId=0;
+		//return ok(views.html.admin._componentsTable(initId));
+        return ok(views.html.admin._componentsTable.render(intId));
+
+	}
+	
+	public static List<ElementDictionary> test(Integer catId)
+	{
+		
+		GlobalCategory globalCategory = GlobalCategory.find.byId((long)catId);
+		
+		List<ElementDictionary> elements = globalCategory.getElementsByCategory();
+		Logger.error(elements.toString());
+		return elements; 
+		
+	}
+
+	public static Result addComponent(Integer categoryId){
+		
+		//Long catId = GlobalUtil.tryParseLong(categoryId);
+
+		GlobalCategory globalCat = GlobalCategory.find.byId((long)categoryId);
+		if (globalCat == null)
+		{
+			return redirect(controllers.routes.Admin.index());
+		}	
+		
+		Form<ElementDictionary> elementDictForm = form(ElementDictionary.class).bindFromRequest();
+		ElementDictionary elementDict = elementDictForm.get();
+		elementDict.setGlobalCategory(globalCat);
+		elementDict.save();	
+		
+		return redirect(controllers.routes.Admin.index());
+	}
+
 	public static Result show(){
 		
 		List<Category> globalCategories = Category.find.where().eq("parent_id", null).findList();
@@ -188,6 +227,24 @@ public class CategoryManager extends Controller{
 		
 		return ok(views.html.global.category.render(globalCategories));
 	//	return ok("siema");
+	}
+	
+	public static Result getCategoryByComponentId(String id)
+	{
+		Long longId = GlobalUtil.tryParseLong(id);
+		ElementDictionary elementDic = ElementDictionary.find.byId(longId);
+		
+	    if (elementDic == null)
+	    	return ok();
+	    
+		GlobalCategory globalCat = elementDic.getGlobalCategory();
+		if (globalCat == null)
+			return ok();				
+		
+		Map<String, String> category = new HashMap<String,String>();
+		category.put("id", globalCat.getId().toString());
+		category.put("name", globalCat.getName());
+		return ok(Json.toJson(category));
 	}
 	
 }

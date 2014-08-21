@@ -2,7 +2,7 @@
 
 @display(category : Category) = {
 
-	<div> @category.getNames() </div>
+	<div> @category.getName() </div>
 	
 	@for(cat <- category.getChildren()){
 		@display(cat)

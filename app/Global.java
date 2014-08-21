@@ -88,6 +88,7 @@ public class Global extends GlobalSettings {
 			role.roleName = controllers.Application.ADMIN_ROLE;
 			role.save();
 			
+			role = new SecurityRole();
 			role.roleName = controllers.Application.USER_ROLE;
 			role.save();
 

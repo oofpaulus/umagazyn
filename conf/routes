@@ -41,17 +41,34 @@ POST    /accounts/link              controllers.Account.doLink
 GET     /accounts/merge             controllers.Account.askMerge
 POST    /accounts/merge             controllers.Account.doMerge
 
+GET 	/projects					 		controllers.Project.index()
+GET 	/projects/$projectId<[0-9]+>/components 		controllers.Project.getComponents(projectId : Long)
+GET 	/projects/$projectId<[0-9]+> 		controllers.Project.show(projectId : Long)
+POST  	/projects 					controllers.Project.doAddProject
+
+GET 	/user_component/get_by_category/:warehouseId  controllers.UserComponent.getComponentsByWarehouseAndCategroyId(warehouseId: Long, id: String ?= "")
+
+GET 	/user_category/get_node 	controllers.Depot.getCategoriesByWarehouseId(id: String ?= "")
+GET 	/user_category/get_node_by_user 	controllers.Depot.getCategoriesByComponentsOwner()
+
+
+GET		/components/get_components_name		controllers.ComponentManager.getComponents(search: String ?= "")
+GET		/category/get_by_component_id		controllers.CategoryManager.getCategoryByComponentId(id: String ?= "")
 GET		/category					controllers.CategoryManager.show
 GET		/category/get_node  		controllers.CategoryManager.getNode(id: String ?= "")
 GET		/category/delete_node  		controllers.CategoryManager.deleteNode(id: String ?= "")
 GET		/category/create_node  		controllers.CategoryManager.addNode(id: String ?= "", position: String ?= "", text: String ?= "")
 GET		/category/rename_node  		controllers.CategoryManager.renameNode(id: String ?= "", text: String ?= "")
+GET		/category/get_content 		controllers.CategoryManager.getContent(id: String ?= "")
+POST	/category/add_component/:categoryId	controllers.CategoryManager.addComponent(categoryId: Int)
+
+POST	/admin/create_root_node		controllers.Admin.addRootNode
 
 GET     /warehouse/create           controllers.Depot.create
 POST    /warehouse/create           controllers.Depot.doCreate
 POST    /warehouse/add/:warehouseId	controllers.Depot.doAddComponent(warehouseId:Long)
 GET     /warehouse/:warehouseId     controllers.Depot.showWarehouse(warehouseId:Long)
-GET     /warehouse           		controllers.Depot.show
+GET     /warehouse           		controllers.Depot.index
 
 
 GET     /login/password/forgot     controllers.Signup.forgotPassword(email: String ?= "")

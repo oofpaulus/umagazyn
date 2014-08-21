@@ -57,6 +57,17 @@ public class GlobalCategory extends Model {
 	public void setChildren(List<GlobalCategory> children) {
 		this.children = children;
 	}
+	
+	public List<ElementDictionary> getElementsByCategory()
+	{
+		return ElementDictionary.find.where().eq("globalCategory.Id", this.getId()).findList();
+	}
+
+	@Override
+	public String toString() {
+		return "GlobalCategory [Id=" + Id + ", name=" + name + ", parent="
+				+ parent + ", children=" + children + "]";
+	}
 
 	
 	

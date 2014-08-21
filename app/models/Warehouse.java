@@ -1,7 +1,14 @@
 package models;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
 import javax.persistence.*;
+
+import play.Logger;
 import play.data.format.Formats;
 
 import org.joda.time.DateTime;
@@ -89,6 +96,52 @@ public class Warehouse extends Model{
 	public static Finder<Long, Warehouse> getFind() {
 		return find;
 	}
+	
+	private static List<Category> createCategoryListByComponentList(List<Component> components)
+	{
+		List<Category> ret = new ArrayList<Category>();
+		HashMap<Long, Category> categoriesMap = new HashMap<Long, Category>();
+		for (Component component : components)
+		{
+			Category cat = component.getCategory();
+			if (cat == null)
+				continue;
+			
+			categoriesMap.put(cat.getId(), cat);
+			while ((cat = cat.getParent()) != null)
+			{
+				if (components.contains(cat.getId()) == true)
+					break;
+				categoriesMap.put(cat.getId(), cat);
+			}
+		}
+		
+		for (Entry<Long, Category> e : categoriesMap.entrySet())
+		{
+			ret.add(e.getValue());
+		}
+		return ret;
+	}
+	
+	public static List<Category> getNeededCategoryTreeForComponentsInWarehouse(Long warehouseId, User owner)
+	{
+		List<Component> components = Component.find.setDistinct(true).where()
+						.eq("warehouse.id", warehouseId)
+						.eq("owner.id", owner.getId())
+						.findList();
+		
+		return createCategoryListByComponentList(components);
+	}
+		
+	public static List<Category> getNeededCategoryTreeForComponentsByOwner(User owner)
+	{
+		List<Component> components = Component.find.setDistinct(true).where()
+						.eq("owner.id", owner.getId())
+						.findList();
+
+		return createCategoryListByComponentList(components);
+	}
+		
 	
 	
 	
